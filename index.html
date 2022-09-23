@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ LinkedList in WASM</title>
+    <script async type="text/javascript" src="main.js"></script>
+    <script>
+        /**
+         *@param {string} data
+         */
+        function insert(data) {
+            Module.insert(data)
+        }
+        /**
+         *@param {string} data
+         */
+         function insertR(data) {
+            Module.insertR(data)
+        }
+
+        function remove() {
+            Module.remove()
+        }
+        
+        function removeR() {
+            Module.removeR()
+        }
+
+        /**
+        * @returns {number}
+        */
+        function listLength() {
+            return Module.length()
+        }
+
+        /**
+         *@returns {string} 
+         */ 
+        function listItems() {
+            return Module.items();
+        }
+
+        /**
+         *@param {string} itemString 
+         */ 
+        function itemsToArray(itemString) {
+            if(itemString === 'EMPTY_LIST') return [];
+            return itemString.split('->').filter(val => val !== '');
+        }
+
+        window.addEventListener('load',() => {
+            const lengthContainer = document.querySelector('#ll-length');
+            const itemsContainer = document.querySelector('#ll-items')
+
+            const insertBtn = document.querySelector('#insert');
+            const insertRBtn = document.querySelector('#insertR');
+            const removeBtn = document.querySelector('#remove');
+            const removeRBtn = document.querySelector('#removeR');
+            /**@type {HTMLInputElement} */
+            const item = document.querySelector('#item');
+
+            function writeLength(len) {
+                lengthContainer.innerText = `There are ${len} items in the linked list`
+            }
+
+            function writeList(itemString) {
+                const items = itemsToArray(itemString);
+
+                const html = `<ul>` + items.map(v => `<li>${v}</li>`).join('') + `</ul>`;
+
+                itemsContainer.innerHTML = html;
+            }
+
+            insertBtn.addEventListener('click',() => {
+                const data = item.value;
+                item.value = "";
+                insertR(data);
+                const len = listLength();
+                writeLength(len);
+                const items = listItems();
+                writeList(items);
+            })
+
+            insertRBtn.addEventListener('click',() => {
+                const data = item.value;
+                item.value = "";
+                insert(data);
+                const len = listLength();
+                writeLength(len);
+                const items = listItems();
+                writeList(items);
+            })
+
+            removeBtn.addEventListener('click',() => {
+                removeR();
+                const len = listLength();
+                writeLength(len);
+                const items = listItems();
+                writeList(items);
+            })
+            
+            removeRBtn.addEventListener('click',() => {
+                remove();
+                const len = listLength();
+                writeLength(len);
+                const items = listItems();
+                writeList(items);
+            })
+        })
+    </script>
+</head>
+<body>
+    <h3>Add Items to Linked List</h3>
+    <input name="item" id="item" placeholder="Enter a string value"/>
+    <button id="insert">Insert at Begining</button>
+    <button id="insertR">Insert at End</button>
+    <button id="remove">Remove at Begining</button>
+    <button id="removeR">Remove at End</button>
+    <p id="ll-length">There are 0 items in the linked list</p>
+    <div id="ll-items">
+
+    </div>
+</body>
+</html>
